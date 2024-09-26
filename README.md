@@ -1,0 +1,3 @@
+This are dockerfille to create images of frontend ,backend and database for django based application 
+NOTE: Dont forget to set env variables where needed as they were set during the RUN time
+......
