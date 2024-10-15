@@ -1,0 +1,57 @@
+name: chatapp
+services:
+  database:
+    image: mysql:8.0
+    networks:
+      - chatapp-network
+    container_name: mysqldb
+    environment:
+      MYSQL_ROOT_PASSWORD: "12345678"
+      MYSQL_DATABASE: "chatapp"
+      MYSQL_USER: "chatapp"
+      MYSQL_PASSWORD: "12345678"
+    ports:
+      - "3306:3306"
+    volumes:
+      - chatapp_volume:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  backend:
+    image: backend-img
+    networks:
+      - chatapp-network
+    build:
+      context: ./backend
+    container_name: backend
+    environment:
+      CHATDB: "chatapp"
+      CHATDBUSER: "chatapp"
+      CHATDBPASSWORD: "12345678"
+      CHATDBHOST: "mysqldb"
+    ports:
+      - "8000:8000"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  frontend:
+    image: frontend-img
+    networks:
+      - chatapp-network
+    container_name: frontend
+    build:
+      context: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+networks:
+  chatapp-network:
+    driver: bridge
+volumes:
+  chatapp_volume:
+    external: true
+#new entry
