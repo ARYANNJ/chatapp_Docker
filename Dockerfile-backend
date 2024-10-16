@@ -8,5 +8,9 @@ RUN pip3 install virtualenv && \
     . venv/bin/activate && \
     pip3 install -r requirements.txt && \
     pip3 install mysqlclient
+ENV CHATDB=chatapp
+ENV CHATDBUSER=chatapp
+ENV CHATDBPASSWORD=12345678
+ENV CHATDBHOST=mysqldb
 CMD ["/bin/bash", "-c", "source venv/bin/activate && python3 /app/fundoo/manage.py makemigrations && python3 /app/fundoo/manage.py migrate && python3 /app/fundoo/manage.py runserver 0.0.0.0:8000"]
 EXPOSE 8000
